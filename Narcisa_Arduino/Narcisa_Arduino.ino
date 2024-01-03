@@ -1,24 +1,30 @@
 #include <LiquidCrystal.h>
-#include <stdio.h>
-#include <string.h>
+#include <SoftwareSerial.h>
 
 // PINS
-enum { RS = 7, EN, D4, D5, D6, D7 };
+enum { RX = 10, TX};
+enum { RS = 4, EN, D4, D5, D6, D7 };
 
 // GLOBAL VARS
-LiquidCrystal g_LCD(RS, EN, D4, D5, D6, D7);
 
-char g_Disp[4][17];
-String g_Buff;
+LiquidCrystal g_LCD(RS, EN, D4, D5, D6, D7); // Initialize LCD object
+SoftwareSerial g_BT(RX, TX); // Initialize software UART object
 
-uint8_t g_NumStr;
-uint8_t g_Scroll;
+char g_Disp[4][17]; // 4 lines of 16 characters +1 null terminator
+String g_Buff; // Plain text buffer
 
-void PrintLines(char msg0[17], char msg1[17]); 
-void ConvertBuffer(char dst[4][17], const char* buff);
+uint8_t g_NumStr; // Number of non empty lines found in g_Disp
+uint8_t g_Scroll; // Line of g_Disp from which the display will start printing
+
+void PrintLines(char msg0[17], char msg1[17]); // Print two 16 character lines to the display
+void ConvertBuffer(char dst[4][17], const char* buff); // Convert a string to the display format
 
 void setup() {
   Serial.begin(9600);
+  g_BT.begin(9600);
+
+  g_LCD.begin(16, 2);
+  g_LCD.clear();
 
   pinMode(LED_BUILTIN, OUTPUT);
   digitalWrite(LED_BUILTIN, LOW);
@@ -27,20 +33,32 @@ void setup() {
   g_Scroll = 0;
   
   g_Buff.reserve(64);
+
+  // Configure name of bluetooth module
+  g_BT.print("AT+NAMENBT04-E\r\n");
+  delay(2000);
+  // Receive and display Name and OK
+  if(g_BT.available()) {
+    g_Buff = g_BT.readStringUntil('\n');
+    g_Buff.trim();
+    //Serial.println(g_Buff);
+    ConvertBuffer(g_Disp, g_Buff.c_str());
+    PrintLines(g_Disp[0], g_Disp[1]);
+  }
+  else {
+    ConvertBuffer(g_Disp, "No response from BT module");
+    PrintLines(g_Disp[0], g_Disp[1]);
+  }
   
-  g_LCD.begin(16, 2);
-  g_LCD.clear();
-  ConvertBuffer(g_Disp, "Setup Complete");
-  PrintLines(g_Disp[0], g_Disp[1]);
 }
 
 void loop() {
   
-  delay(2000);
+  delay(5000);
   digitalWrite(LED_BUILTIN, LOW);
   
-  if(Serial.available()) {
-    g_Buff = Serial.readStringUntil('\n');
+  if(g_BT.available()) {
+    g_Buff = g_BT.readStringUntil('\n');
     if(g_Buff.length() > 63) g_Buff.remove(63);
     g_Buff.trim();
 
@@ -95,8 +113,8 @@ void PrintLines(char msg0[17], char msg1[17]) {
 }
 
 void ConvertBuffer(char dst[4][17], const char* buff) {
-  memset(dst[0], 0, 17);
-  memset(dst[1], 0, 17);
+  //memset(dst[0], 0, 17);
+  //memset(dst[1], 0, 17);
   static char inter[64];
   memset(inter, 0, 64);
   strncpy(inter, buff, 63);

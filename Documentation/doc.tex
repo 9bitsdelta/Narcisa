@@ -1,53 +1,56 @@
-\documentclass[12pt, a4paper]{report}
-
-\usepackage{lipsum}
-
-\usepackage[utf8]{inputenc}
-
-\usepackage{titlesec}
-\titleformat{\chapter}{\huge\bf}{\thechapter}{20pt}{\huge\bf}
-
-\usepackage{graphicx}
-
-\usepackage[margin=1in]{geometry}
-
-\usepackage{amsmath}
-
-\usepackage{minted}
-\usepackage{mdframed}
-\definecolor{bg}{rgb}{0.90,0.90,0.90}
+\input{preamble.tex}
 
 \title{
-    \huge\textbf{Proiect 3}\\
-    \large Transmiterea unui mesaj de la telefon la Arduino Uno
-    prin Bluetooth și afișarea lui pe un LCD. Aprinderea unui LED pentru
-    un anumit mesaj.
+    Project 3
 }
 
 \author{
     Mircea-Ionuț Meche\\
-    Teodora Opriș\\
+    Teodora-Alexandra Opriș\\
     Vlad-Ștefan Moreanu\\
-    431G
+    441G
 }
-\date{}
+
+\affil{
+    \it Faculty of Electronics, Telecommunications and Information Technology\\
+    \it UNSTPB
+}
+
+\date{2024}
+
+\addbibresource{cite.bib}
 
 \begin{document}
+
 \maketitle
-\newpage
 
 \tableofcontents
 
-\chapter{Descrierea temei}
+\listoffigures
 
-Folosind App Inventor (sau ceva similar) se va face o aplicatie ce se va
-conecta prin Bluetooth la Arduino ce are un modul Bluetooth. Mesajul va fi
-primit sub forma unui string si afisat pe LCD. Daca stringul respectiv contine
-un anumit cuvant de exemplu "ETTI" se va aprinde pentru cateva secunde un LED.\\
+\chapter{Project description}
 
-Hardware: Arduino Uno, Modul Bluetooth, LCD, LED;\\
+Transmission of a message from a smartphone to an Ardunino UNO board via
+Bluetooth and displaying the message on an LCD.
 
-Software: Cod C++, AppInventor;\\
+Using MIT App Inventor (or something similar) an Android application will be
+created which will connect through Bluetooth to the Arduino board. The message
+will be recieved as a string and displayed on the LCD. If said string contains
+a keyword (e.g. ETTI) an LED will be lit for a few seconds.
+
+Hardware: Arduino UNO, Bluetooth module, LCD;
+
+Software: C/C++, App Inventor;
+
+\section{Hello!}
+
+SoftwareSerial library\cite{softserial}, LiquidCrystal library\cite{lcd}.
+
+\lipsum[1]
+
+\lipsum[2]
+
+\printbibliography
 
 \end{document}
 

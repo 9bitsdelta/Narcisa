@@ -1,5 +1,7 @@
 Documentation/*
 !Documentation/*.tex
+!Documentation/*.bib
+!Documentation/*.pdf
 
 Circuits/*backups
 
